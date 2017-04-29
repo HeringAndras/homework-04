@@ -158,4 +158,51 @@ ggsave("fig/hiphop2.png")
 
 #### 4/1 ####
 
+negyperegy <- as.data.frame(table(tweets$handle,
+                                    tweets$time,
+                                    tweets$text_emotion,
+                                    tweets$text_sentiment))
+negyperegy <- negyperegy[negyperegy$Freq >= 1,]
+
+ggplot(negyperegy,aes(Var1,Freq,fill = Var3)) +
+  geom_bar(stat = "identity")
+
+ggplot(negyperegy,aes(Var1,Freq,fill = Var4)) +
+  geom_bar(stat = "identity")
+
+
+negyperegy$Var2<-as.Date(negyperegy$Var2)
+
+negyperegy <- aggregate(cbind(Freq) ~ Var1 + Var2 + Var3 + Var4, data = negyperegy, sum)
+
+for (i in 1:nrow(negyperegy)) {
+  negyperegy[i,6] <- kalap[[i]][1]
+  negyperegy[i,7] <- kalap[[i]][2]
+  negyperegy[i,8] <- kalap[[i]][3]
+}
+
+
+ggplot(negyperegy,aes(Var2,Freq, fill = Var1)) +
+  geom_bar(stat = "identity")  + scale_x_date(date_minor_breaks = "3 month",date_breaks = "3 month")
+
+ggplot(negyperegy,aes(Var2,Freq, fill = Var3)) + geom_bar(stat = "identity")
+kalap <- as.list(strsplit(as.character(negyperegy$Var2),"-",fixed = T))
+
+
+ggplot(negyperegy,aes(V7,Freq, fill = Var1)) + geom_bar(stat = "identity")
+ggplot(negyperegy,aes(V7,Freq, fill = Var3)) + geom_bar(stat = "identity")
+ggplot(negyperegy,aes(V7,Freq, fill = Var4)) + geom_bar(stat = "identity")
+
+#### 4/1 ####
+
+table(tweets$handle,tweets$text_sentiment)
+table(tweets$handle,tweets$text_emotion)
+
+
+
+
+
+
+#### 4/2 ####
+
 
