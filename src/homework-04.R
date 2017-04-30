@@ -26,11 +26,14 @@ ggplot(tweets,aes(handle,fill = handle)) +
   geom_bar(stat = "count") +
   ggtitle("Candidate Tweets") +
   theme(plot.title = element_text(hjust = 0.5),
-        panel.background = element_rect(fill = "white", colour = NULL)) +
+        panel.background = element_rect(fill = "white", colour = NULL),
+        axis.title.y = element_text(face = "bold")) +
   ylab("Tweet Frequency") +
   xlab("") +
-  theme(panel.background = element_rect(fill = "white", colour = NULL)) +
-  scale_fill_manual(values=demrepcol)
+  scale_fill_manual(values = demrepcol,
+                    labels =  c("Hillary Clinton", "Donald Trump"),
+                    name = "Candidate") +
+  scale_x_discrete(labels = c("Hillary Clinton","Donald Trump"))
 
 ggsave("fig/tweet1.png")
 
@@ -39,31 +42,30 @@ ggsave("fig/tweet1.png")
 
 table(tweets$handle,tweets$lang)
 
-noneng <- subset(tweets, (tweets$lang != "en") & (tweets$lang != "es"))
-
-#View(noneng)
+View(subset(tweets, (tweets$lang != "en") & (tweets$lang != "es")))
 
 tweets$lang[tweets$lang != "en" & tweets$lang != "es"] <- "en"
 
-# Hillary nem angol és nem spanyol tweetjei javítva
+# Nem angol és nem spanyol tweetek javítva
 
-noneng2<- subset(tweets, (tweets$handle == "realDonaldTrump") &
-                         (tweets$lang != "en"))
-
-#View(noneng2)
+View(subset(tweets,(tweets$lang != "en")))
 
 tweets$lang[tweets$lang == "es" & tweets$handle == "realDonaldTrump"] <- "en"
 
-# Trump spanyol tweetjei javítva
+# Trump spanyol tweetjei javítva , Hillary-é többnyire megfelel.
+
+
+# ábra
+
 
 langhaszn <- as.data.frame(table(tweets$handle,tweets$lang))
 
 langhaszn <- subset(langhaszn,(langhaszn$Var2 == "en")|(langhaszn$Var2 == "es"))
 
-#külön változóban kell használni a tweetek számát, mert a position dodge-ot
-#nem lehet rábírni arra, hogy Trump oszlopát ne szélesítse ki végig.
-#a http://ggplot2.tidyverse.org szerint van egy olyan, hogy preserve = "single"
-# argumentum a position_dodge-ban , de itt nem akar működni, és a helpben sincs
+# külön változóban kell használni a tweetek számát, mert a position dodge-ot
+# nem lehet rábírni arra, hogy Trump oszlopát ne szélesítse ki végig.
+# A http://ggplot2.tidyverse.org szerint van egy olyan, hogy preserve = "single"
+# argumentum a position_dodge-ban, de itt nem akar működni, és a helpben sincs
 # ilyenről szó. Minden up-to-date.
 
 palette2 <- c("darkgrey","cornflowerblue")
@@ -74,19 +76,24 @@ ggplot(langhaszn, aes(Var1,Freq, group = Var2, fill = Var2  )) +
   xlab("") +
   ylab("Tweet Frequency") +
   theme(plot.title = element_text(hjust = 0.5),
-        panel.background = element_rect(fill = "white", colour = NULL)) +
-  scale_fill_manual(values=palette2)
+        panel.background = element_rect(fill = "white", colour = NULL),
+        axis.title.y = element_text(face = "bold")) +
+  scale_fill_manual(values=palette2,
+                    labels = c("English","Spanish"),
+                    name = "Language") +
+  scale_x_discrete(labels = c("Hillary Clinton","Donald Trump"))
   
 ggsave("fig/tweet2.png")
 
 #### 2/4 ####
 
-source("~/homework-04/src/homework-04-functions.R")
+source("~/homework-04/src/homework-04-functions.R", encoding = "UTF-8")
 
 tweetek_csokkeno("Hillary Clinton",10)
 tweetek_csokkeno("Donald Trump",15)
-tweetek_csokkeno("kalap")
-tweetek_csokkeno()
+#tweetek_csokkeno("Donald Trump",9999999)
+#tweetek_csokkeno("kalap")
+#tweetek_csokkeno()
 
 #### 3/1 ####
 
@@ -97,12 +104,11 @@ if (!("fivethirtyeight" %in% installed.packages())) {
 library(fivethirtyeight)
 data("hiphop_cand_lyrics")
 
-View(hiphop_cand_lyrics)
+#View(hiphop_cand_lyrics)
 
 
-ggplot(hiphop_cand_lyrics,
-       aes(album_release_date, fill = candidate)) +
-  geom_bar(stat = "count", position = position_stack())
+# ggplot(hiphop_cand_lyrics,aes(album_release_date, fill = candidate)) +
+#   geom_bar(stat = "count", position = position_stack())
 
 # képtelen egymásra rakni a stackeket, itt is megint kerülőútra van szükség
 
@@ -117,7 +123,7 @@ ggplot(hiphiphurra,aes(Var2,Freq, fill = Var1)) +
   theme(plot.title = element_text(hjust = 0),
         panel.grid.major = element_line(colour = "darkgrey"),
         panel.grid.minor = element_line(colour = "darkgrey"),
-        panel.background = element_rect(fill = "lightgrey",colour = "lightgrey"),
+        panel.background = element_rect(fill = "lightgrey",colour= "lightgrey"),
         plot.background = element_rect(fill = "lightgrey"),
         legend.position = "top",
         legend.background = element_rect(fill ="lightgrey")
@@ -131,6 +137,7 @@ ggsave("fig/hiphop1.png")
 hiphiphurra2 <- as.data.frame(table(hiphop_cand_lyrics$candidate,
                                     hiphop_cand_lyrics$album_release_date,
                                     hiphop_cand_lyrics$sentiment))
+
 hiphiphurra2 <- hiphiphurra2[hiphiphurra2$Var3 == "positive",]
 
 ggplot(hiphiphurra2,aes(Var2,Freq, fill = Var1)) +
@@ -141,7 +148,7 @@ ggplot(hiphiphurra2,aes(Var2,Freq, fill = Var1)) +
   theme(plot.title = element_text(hjust = 0.5),
         panel.grid.major = element_line(colour = "darkgrey"),
         panel.grid.minor = element_line(colour = "darkgrey"),
-        panel.background = element_rect(fill = "lightgrey",colour = "lightgrey"),
+        panel.background = element_rect(fill = "lightgrey",colour= "lightgrey"),
         plot.background = element_rect(fill = "lightgrey"),
         legend.position = "top",
         legend.background = element_rect(fill ="lightgrey")
@@ -150,7 +157,7 @@ ggplot(hiphiphurra2,aes(Var2,Freq, fill = Var1)) +
                               "2005" = "'05","2010" = "'10","2015" = "'15"),
                    breaks = c(1990,1995,2000,2005,2010,2015))
 
-ggsave("fig/hiphop2.png")
+ggsave("fig/hiphop2.png",width = 10,height = 10)
 
 
 #### 3/2 #### 
@@ -158,51 +165,39 @@ ggsave("fig/hiphop2.png")
 
 #### 4/1 ####
 
-negyperegy <- as.data.frame(table(tweets$handle,
-                                    tweets$time,
-                                    tweets$text_emotion,
-                                    tweets$text_sentiment))
-negyperegy <- negyperegy[negyperegy$Freq >= 1,]
+ggplot(tweets,aes(handle,fill = text_emotion)) +
+  geom_bar(stat = "count", position = "fill")
 
-ggplot(negyperegy,aes(Var1,Freq,fill = Var3)) +
-  geom_bar(stat = "identity")
+ggplot(tweets,aes(handle,fill = text_sentiment)) +
+  geom_bar(stat = "count", position = "fill")
 
-ggplot(negyperegy,aes(Var1,Freq,fill = Var4)) +
-  geom_bar(stat = "identity")
+tweets$time2 <- as.Date(tweets$time)
+tweets$honap <- sapply(strsplit(as.character(tweets$time2),"-",fixed = T),"[",2)
 
 
-negyperegy$Var2<-as.Date(negyperegy$Var2)
-
-negyperegy <- aggregate(cbind(Freq) ~ Var1 + Var2 + Var3 + Var4, data = negyperegy, sum)
-
-for (i in 1:nrow(negyperegy)) {
-  negyperegy[i,6] <- kalap[[i]][1]
-  negyperegy[i,7] <- kalap[[i]][2]
-  negyperegy[i,8] <- kalap[[i]][3]
-}
+ggplot(tweets,aes(honap,fill = handle)) + geom_bar(stat = "count")
+ggplot(tweets,aes(honap,fill = text_emotion)) + geom_bar(stat = "count")
+ggplot(tweets,aes(honap,fill = text_sentiment)) + geom_bar(stat = "count")
 
 
-ggplot(negyperegy,aes(Var2,Freq, fill = Var1)) +
-  geom_bar(stat = "identity")  + scale_x_date(date_minor_breaks = "3 month",date_breaks = "3 month")
+chisq.test(x = tweets$handle,tweets$text_emotion)
+chisq.test(x = tweets$handle,tweets$text_sentiment)
 
-ggplot(negyperegy,aes(Var2,Freq, fill = Var3)) + geom_bar(stat = "identity")
-kalap <- as.list(strsplit(as.character(negyperegy$Var2),"-",fixed = T))
-
-
-ggplot(negyperegy,aes(V7,Freq, fill = Var1)) + geom_bar(stat = "identity")
-ggplot(negyperegy,aes(V7,Freq, fill = Var3)) + geom_bar(stat = "identity")
-ggplot(negyperegy,aes(V7,Freq, fill = Var4)) + geom_bar(stat = "identity")
-
-#### 4/1 ####
-
-table(tweets$handle,tweets$text_sentiment)
-table(tweets$handle,tweets$text_emotion)
-
-
-
-
-
+#szignifikáns különbségek vannak
 
 #### 4/2 ####
 
+ggplot(tweets,aes(honap,fill =text_sentiment)) + 
+  geom_bar(data = subset(tweets,handle == "realDonaldTrump"))
+
+tweets[grep('android',tweets$source_url),35] <- "android"
+tweets[grep('iphone',tweets$source_url),35] <- "iphone"
+
+ggplot(tweets,aes(V35,fill = text_sentiment)) +
+  geom_bar(data = subset(tweets,handle == "realDonaldTrump" & V35 != "NA"),
+           position = "fill")
+
+chisq.test(tweets$text_sentiment[tweets$text_sentiment != "unknown"],tweets$V35)
+chisq.test(tweets$text_emotion[tweets$text_sentiment != "unknown"],tweets$V35)
+table(tweets$text_emotion,tweets$V35)
 
