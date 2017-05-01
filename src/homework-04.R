@@ -35,7 +35,7 @@ ggplot(tweets,aes(handle,fill = handle)) +
                     name = "Candidate") +
   scale_x_discrete(labels = c("Hillary Clinton","Donald Trump"))
 
-ggsave("fig/tweet1.png")
+#ggsave("fig/tweet1.png",height = 10,width = 10)
 
 
 #### 2/3 ####
@@ -83,7 +83,8 @@ ggplot(langhaszn, aes(Var1,Freq, group = Var2, fill = Var2  )) +
                     name = "Language") +
   scale_x_discrete(labels = c("Hillary Clinton","Donald Trump"))
   
-ggsave("fig/tweet2.png")
+  
+#ggsave("fig/tweet2.png",height = 10,width = 10)
 
 #### 2/4 ####
 
@@ -126,13 +127,17 @@ ggplot(hiphiphurra,aes(Var2,Freq, fill = Var1)) +
         panel.background = element_rect(fill = "lightgrey",colour= "lightgrey"),
         plot.background = element_rect(fill = "lightgrey"),
         legend.position = "top",
-        legend.background = element_rect(fill ="lightgrey")
+        legend.background = element_rect(fill ="lightgrey"),
+        legend.key = element_rect(fill="lightgrey")
         ) +
   scale_x_discrete(labels = c("1990" = "1990", "1995" = "'95","2000" = "2000",
                               "2005" = "'05","2010" = "'10","2015" = "'15"),
-                   breaks = c(1990,1995,2000,2005,2010,2015))
+                   breaks = c(1990,1995,2000,2005,2010,2015))+
+  scale_fill_discrete(name = "",
+                    labels = c("Carson,","Christie","Clinton","Huckabee",
+                               "Sanders","Trump","Bush","Cruz"))
 
-ggsave("fig/hiphop1.png",height = 10, width = 10)
+#ggsave("fig/hiphop1.png",height = 10, width = 10)
 
 hiphiphurra2 <- as.data.frame(table(hiphop_cand_lyrics$candidate,
                                     hiphop_cand_lyrics$album_release_date,
@@ -150,14 +155,17 @@ ggplot(hiphiphurra2,aes(Var2,Freq, fill = Var1)) +
         panel.grid.minor = element_line(colour = "darkgrey"),
         panel.background = element_rect(fill = "lightgrey",colour= "lightgrey"),
         plot.background = element_rect(fill = "lightgrey"),
-        legend.position = "top",
+        legend.position = "bottom",
         legend.background = element_rect(fill ="lightgrey")
   ) +
   scale_x_discrete(labels = c("1990" = "1990", "1995" = "'95","2000" = "2000",
                               "2005" = "'05","2010" = "'10","2015" = "'15"),
-                   breaks = c(1990,1995,2000,2005,2010,2015))
+                   breaks = c(1990,1995,2000,2005,2010,2015)) +
+  scale_fill_discrete(name = "",
+                      labels = c("Carson,","Christie","Clinton","Huckabee",
+                                 "Sanders","Trump","Bush","Cruz"))
 
-ggsave("fig/hiphop2.png",width = 10,height = 10)
+#ggsave("fig/hiphop2.png",width = 10,height = 10)
 
 
 #### 3/2 #### 
@@ -197,7 +205,23 @@ ggplot(tweets,aes(V35,fill = text_sentiment)) +
   geom_bar(data = subset(tweets,handle == "realDonaldTrump" & V35 != "NA"),
            position = "fill")
 
-chisq.test(tweets$text_sentiment[tweets$text_sentiment != "unknown"],tweets$V35)
-chisq.test(tweets$text_emotion[tweets$text_sentiment != "unknown"],tweets$V35)
-table(tweets$text_emotion,tweets$V35)
+ggplot(tweets,aes(V35,fill = text_emotion)) +
+  geom_bar(data = subset(tweets,handle == "realDonaldTrump" & V35 != "NA"),
+           position = "fill")
+
+ggplot(tweets,aes(V35,fill = text_emotion)) +
+  geom_bar(data = subset(tweets,handle == "realDonaldTrump" & V35 != "NA" &
+                         text_emotion != "unknown"), position = "fill")
+
+
+table(tweets$V35,tweets$text_emotion)
+
+table(tweets$V35,tweets$text_sentiment)
+
+chisq.test(tweets$text_sentiment,tweets$V35)
+
+chisq.test(subset(tweets$text_emotion,tweets$text_emotion != "unknown"),
+           subset(tweets$V35,tweets$text_emotion != "unknown"))
+
+
 
