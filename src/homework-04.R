@@ -90,8 +90,8 @@ ggplot(langhaszn, aes(Var1,Freq, group = Var2, fill = Var2  )) +
 
 source("~/homework-04/src/homework-04-functions.R", encoding = "UTF-8")
 
-tweetek_csokkeno("Hillary Clinton",10)
-tweetek_csokkeno("Donald Trump",15)
+#tweetek_csokkeno("Hillary Clinton",10)
+#tweetek_csokkeno("Donald Trump",15)
 #tweetek_csokkeno("Donald Trump",9999999)
 #tweetek_csokkeno("kalap")
 #tweetek_csokkeno()
@@ -169,6 +169,10 @@ ggplot(hiphiphurra2,aes(Var2,Freq, fill = Var1)) +
 
 
 #### 3/2 #### 
+View(hiphop_cand_lyrics)
+
+ggplot(hiphop_cand_lyrics,aes(candidate, fill = sentiment)) + geom_bar(stat = "count",position = "fill")
+#ggsave("fig/hiphop3.png",width = 10,height = 10)
 
 
 #### 4/1 ####
