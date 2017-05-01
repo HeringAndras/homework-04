@@ -120,7 +120,7 @@ ggplot(hiphiphurra,aes(Var2,Freq, fill = Var1)) +
   xlab("") +
   ylab("") +
   ggtitle("Every mention of 2016 primary candidates in hip-hop songs") +
-  theme(plot.title = element_text(hjust = 0),
+  theme(plot.title = element_text(hjust = 0.5),
         panel.grid.major = element_line(colour = "darkgrey"),
         panel.grid.minor = element_line(colour = "darkgrey"),
         panel.background = element_rect(fill = "lightgrey",colour= "lightgrey"),
@@ -132,7 +132,7 @@ ggplot(hiphiphurra,aes(Var2,Freq, fill = Var1)) +
                               "2005" = "'05","2010" = "'10","2015" = "'15"),
                    breaks = c(1990,1995,2000,2005,2010,2015))
 
-ggsave("fig/hiphop1.png")
+ggsave("fig/hiphop1.png",height = 10, width = 10)
 
 hiphiphurra2 <- as.data.frame(table(hiphop_cand_lyrics$candidate,
                                     hiphop_cand_lyrics$album_release_date,
